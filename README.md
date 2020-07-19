@@ -9,6 +9,8 @@
 * to select the block (like the wall).
 ### GENERATE RANDOM BLOCKS
 * to generate the random blocks in the graph.
+### REMOVE BLOCKS
+* to remove the blocks.
 ### MOVE DIAGONALLY ALSO
 * click to move the node diagonally also
 ### FIND SHORTEST PATH
