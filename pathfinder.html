@@ -1,0 +1,386 @@
+<!-- css code -->
+
+
+<style>
+    body {
+        background-image: url('data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="28" height="49" viewBox="0 0 28 49"%3E%3Cg fill-rule="evenodd"%3E%3Cg id="hexagons" fill="%239C92AC" fill-opacity="0.4" fill-rule="nonzero"%3E%3Cpath d="M13.99 9.25l13 7.5v15l-13 7.5L1 31.75v-15l12.99-7.5zM3 17.9v12.7l10.99 6.34 11-6.35V17.9l-11-6.34L3 17.9zM0 15l12.98-7.5V0h-2v6.35L0 12.69v2.3zm0 18.5L12.98 41v8h-2v-6.85L0 35.81v-2.3zM15 0v7.5L27.99 15H28v-2.31h-.01L17 6.35V0h-2zm0 49v-8l12.99-7.5H28v2.31h-.01L17 42.15V49h-2z"/%3E%3C/g%3E%3C/g%3E%3C/svg%3E');
+    }
+    
+    table,
+    th,
+    td {
+        border: 1px solid Gray;
+        border-collapse: collapse;
+        padding: 9px;
+    }
+    
+    #mytable {
+        border: 2px solid rgb(46, 42, 42);
+        border-style: solid;
+        margin-left: auto;
+        margin-right: auto;
+    }
+    
+    td:active {
+        background-color: black;
+    }
+    
+    button {
+        cursor: pointer;
+        letter-spacing: 1px;
+        font-family: "Segoe UI", Arial, sans-serif;
+        font-size: large;
+        font-weight: 501;
+        background-color: rgb(255, 255, 255);
+        color: black;
+        border-radius: 20%;
+        padding: 9px;
+        transition: 1s;
+        border: 2.5px solid rgb(46, 42, 42);
+    }
+    
+    button:hover {
+        padding-right: 5px;
+        color: white;
+        background-color: rgb(46, 42, 42);
+        border-color: white;
+    }
+    
+    #header {
+        position: relative;
+        overflow: hidden;
+        background-color: blueviolet;
+        padding-top: 1px;
+        margin: -8px;
+        margin-block-end: -16px;
+        opacity: 70%;
+    }
+    
+    h1 {
+        text-align: left;
+        opacity: 90%;
+        margin-left: 39px;
+    }
+</style>
+
+
+<!-- html code -->
+
+<div id="header">
+    <h1>SHORTEST PATH FINDER</h1>
+</div>
+
+<body style="background-color:rgb(114, 198, 201)">
+    <div style="padding: 20px;text-align:center;float:left;align-items:center">
+        <button onclick="start()">starting node</button>
+        <button onclick="stop()">ending node</button>
+        <button onclick="block()">select blocks</button>
+        <button onclick="ranblock()">generate random blocks</button>
+        <button onclick="diagonal()">move diagonally also</button>
+        <button onclick="main()">find shortest path</button>
+        <button onclick="reset()">reset</button>
+    </div>
+
+
+</body>
+
+
+
+<!-- javascript code -->
+
+
+
+<script>
+    var x = document.createElement("TABLE");
+    x.setAttribute("id", "myTable");
+    //x.setAttribute("style", "border:3px solid black;border-style: solid;margin-left: auto;margin-right: auto;")
+    document.body.appendChild(x);
+    var y = document.createElement("TBODY");
+    y.setAttribute("id", "mybody");
+    document.getElementById("myTable").appendChild(y);
+    for (var i = 0; i < 25; i++) {
+        var z = document.createElement("TR");
+        document.getElementById("mybody").appendChild(z);
+        for (var j = 0; j < 50; j++) {
+            var w = document.createElement("TD");
+            w.setAttribute("style", "height:5px;width:5px;background-color:#eedddd;border: 1px solid Gray;border-collapse: collapse;padding: 9px;")
+            z.appendChild(w);
+        }
+    }
+    var check = 0
+    var check1 = 0
+    var bl = [];
+    var s = [1, 1];
+    var en = [4, 5];
+    var dia = 0;
+    var objarr = [];
+    var mainarr = [];
+
+    function reset() {
+        dia = 0;
+        check = 0;
+        check1 = 0;
+        bl = [];
+        s = [10, 10];
+        en = [10, 22];
+        visited = [s];
+        objarr = [];
+        mainarr = [];
+        for (var c = 0; c < 25; c++) {
+            for (var d = 0; d < 50; d++) {
+                var x = document.getElementById("myTable").rows[c].cells;
+                x[d].style.backgroundColor = "#eedddd";
+
+            }
+        }
+    }
+
+    function diagonal() {
+        dia = 1;
+    }
+
+    function ranblock() {
+        for (var c = 0; c < 25; c++) {
+            for (var d = 0; d < 50; d++) {
+                if (Math.random() > 0.6) {
+                    var x = document.getElementById("myTable").rows[c].cells;
+                    x[d].style.backgroundColor = "#333333";
+                    bl.push([c, d]);
+                }
+            }
+
+        }
+    }
+
+    function start() {
+        check = 1
+    }
+
+    function stop() {
+        check = 2
+    }
+
+    function block() {
+        check = 3
+    }
+
+    var table = document.getElementById('myTable');
+    var getTBody = table.getElementsByTagName("tbody")[0];
+    getTBody.onclick = function(e) {
+        var a = e.target.parentNode.rowIndex;
+        var b = e.target.cellIndex;
+        if (check == 1) {
+            var x = document.getElementById("myTable").rows[a].cells;
+            x[b].style.backgroundColor = "MediumSeaGreen";
+            var x = document.getElementById("myTable").rows[s[0]].cells;
+            x[s[1]].style.backgroundColor = "#eedddd";
+            s.push(a, b);
+            s.shift();
+            s.shift();
+        } else if (check == 2) {
+            var x = document.getElementById("myTable").rows[a].cells;
+            x[b].style.backgroundColor = "#ff3399";
+            var x = document.getElementById("myTable").rows[en[0]].cells;
+            x[en[1]].style.backgroundColor = "#eedddd";
+            en.push(a, b);
+            en.shift();
+            en.shift();
+
+        } else if (check == 3) {
+            var x = document.getElementById("myTable").rows[a].cells;
+            x[b].style.backgroundColor = "#333333";
+            bl.push([a, b]);
+        } else {
+
+        }
+    }
+    getTBody.onmousedown = function(e) {
+        if (check == 3) {
+            check1 = 1
+        }
+    }
+    getTBody.onmouseup = function(e) {
+        if (check == 3) {
+            check1 = 0
+        }
+    }
+    getTBody.onmouseover = function(e) {
+        var a = e.target.parentNode.rowIndex;
+        var b = e.target.cellIndex;
+        if ((check == 3) && (check1 == 1)) {
+            var x = document.getElementById("myTable").rows[a].cells;
+            x[b].style.backgroundColor = "#333333";
+            bl.push([a, b]);
+        }
+    }
+
+    async function main() {
+        var visited = [s];
+        var posi = [s[0], s[1]];
+        mainarr.push([posi, null]);
+        class arr {
+            constructor(position, parent) {
+                this.position = position;
+                this.parent = parent;
+            }
+            present() {
+                return "position" + this.position + "parent" + this.parent;
+            }
+        }
+
+        function findparentcl(parentpos) {
+            for (var i = 0; i < objarr.length; i++) {
+                if (objarr[i].position == parentpos) {
+                    return objarr[i]
+                }
+            }
+        }
+
+        function canvisit(cordinates) {
+            for (var i = 0; i < visited.length; i++) {
+                if (visited[i][0] == cordinates[0] && visited[i][1] == cordinates[1]) {
+                    return false
+                }
+            }
+            visited.push(cordinates);
+            return true
+        }
+
+        function isend(cord) {
+            if (cord.position[0] == en[0] && cord.position[1] == en[1]) {
+                return true
+            }
+            return false
+        }
+
+        function isinscope(pos) {
+            if ((pos[0] >= 0 && pos[1] >= 0 && pos[0] <= 24 && pos[1] <= 49)) {
+
+                return true
+            }
+            return false
+        }
+
+
+        function block(pos) {
+
+            for (var i = 0; i < bl.length; i++) {
+                if (bl[i][0] == pos[0] && bl[i][1] == pos[1]) {
+                    return false
+                }
+            }
+            return true
+        }
+
+
+        function findshortest(obj) {
+            arra = [];
+            while (true) {
+                arra.push([obj.position[0], obj.position[1]]);
+                obj = findparentcl(obj.parent);
+                if (obj.parent == null) {
+                    arra.push([obj.position[0], obj.position[1]]);
+                    arra.reverse();
+                    return arra
+                }
+            }
+        }
+
+        function findchild(ppos) {
+            //1
+            var tem = ppos[0][0] - 1;
+            var poss = [tem, ppos[0][1]];
+            if (isinscope(poss) && canvisit(poss) && block(poss)) {
+                mainarr.push([poss, ppos[0]])
+            }
+            //2
+            var tem = ppos[0][0] + 1;
+            var poss = [tem, ppos[0][1]];
+            if (isinscope(poss) && canvisit(poss) && block(poss)) {
+                mainarr.push([poss, ppos[0]])
+            }
+            //3
+            var tem = ppos[0][1] - 1;
+            var poss = [ppos[0][0], tem];
+            if (isinscope(poss) && canvisit(poss) && block(poss)) {
+                mainarr.push([poss, ppos[0]])
+            }
+            //4
+            var tem = ppos[0][1] + 1;
+            var poss = [ppos[0][0], tem];
+            if (isinscope(poss) && canvisit(poss) && block(poss)) {
+                mainarr.push([poss, ppos[0]])
+            }
+            if (dia == 1) {
+                //5
+                var tem = ppos[0][0] + 1;
+                var tem1 = ppos[0][1] + 1;
+                var poss = [tem, tem1];
+                if (isinscope(poss) && canvisit(poss) && block(poss)) {
+                    mainarr.push([poss, ppos[0]])
+                }
+                //6
+                var tem = ppos[0][0] - 1;
+                var tem1 = ppos[0][1] - 1;
+                var poss = [tem, tem1];
+                if (isinscope(poss) && canvisit(poss) && block(poss)) {
+                    mainarr.push([poss, ppos[0]])
+                }
+                //7
+                var tem = ppos[0][0] + 1;
+                var tem1 = ppos[0][1] - 1;
+                var poss = [tem, tem1];
+                if (isinscope(poss) && canvisit(poss) && block(poss)) {
+                    mainarr.push([poss, ppos[0]])
+                }
+                //8
+                var tem = ppos[0][0] - 1;
+                var tem1 = ppos[0][1] + 1;
+                var poss = [tem, tem1];
+                if (isinscope(poss) && canvisit(poss) && block(poss)) {
+                    mainarr.push([poss, ppos[0]])
+                }
+
+            }
+        }
+        var i = 0;
+        var a = -1;
+        while (true) {
+            var pos = [mainarr[0]];
+            if (mainarr.length == 0) {
+                window.alert("no ways to reach end point")
+            }
+            findchild(pos[0]);
+            if ((pos[0][0][0] !== s[0] || pos[0][0][1] !== s[1]) && (pos[0][0][0] !== en[0] || pos[0][0][1] !== en[1])) {
+                const promise = new Promise((accept) => {
+                    setTimeout(() => {
+                        var x = document.getElementById("myTable").rows[pos[0][0][0]].cells;
+                        x[pos[0][0][1]].style.background = "Dodgerblue";
+                        accept();
+                    }, 10);
+                });
+                await promise;
+            };
+            objarr[i] = new arr(pos[0][0], pos[0][1]);
+            len = objarr.length;
+            if (isend(objarr[len - 1])) {
+                var arra = findshortest(objarr[len - 1]);
+                for (var i = 0; i < arra.length; i++) {
+                    if ((arra[i][0] !== s[0] || arra[i][1] !== s[1]) && (arra[i][0] !== en[0] || arra[i][1] !== en[1])) {
+                        const promise = new Promise((accept) => {
+                            setTimeout(() => {
+                                var x = document.getElementById("myTable").rows[arra[i][0]].cells;
+                                x[arra[i][1]].style.backgroundColor = "yellow";
+                                accept();
+                            }, 10);
+                        });
+                        await promise;
+                    }
+                };
+                break
+            }
+            mainarr.shift();
+            i++;
+        }
+    }
+</script>
