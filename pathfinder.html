@@ -26,6 +26,7 @@
     }
     
     button {
+        margin-top: 6px;
         cursor: pointer;
         letter-spacing: 1px;
         font-family: "Segoe UI", Arial, sans-serif;
@@ -47,6 +48,7 @@
     }
     
     #header {
+        display: flex;
         position: relative;
         overflow: hidden;
         background-color: blueviolet;
@@ -60,6 +62,7 @@
         text-align: left;
         opacity: 90%;
         margin-left: 39px;
+        margin-right: 500px;
     }
 </style>
 
@@ -68,6 +71,7 @@
 
 <div id="header">
     <h1>SHORTEST PATH FINDER</h1>
+    <h4 style="text-align: right;">copyright by naveen4rawat</h4>
 </div>
 
 <body style="background-color:rgb(114, 198, 201)">
@@ -76,8 +80,9 @@
         <button onclick="stop()">ending node</button>
         <button onclick="block()">select blocks</button>
         <button onclick="ranblock()">generate random blocks</button>
+        <button onclick="remove()">remove blocks</button>
         <button onclick="diagonal()">move diagonally also</button>
-        <button onclick="main()">find shortest path</button>
+        <button onclick="main()" style="margin-right: 790px">find shortest path</button>
         <button onclick="reset()">reset</button>
     </div>
 
@@ -115,6 +120,10 @@
     var dia = 0;
     var objarr = [];
     var mainarr = [];
+
+    function remove() {
+        check = 4
+    }
 
     function reset() {
         dia = 0;
@@ -190,6 +199,24 @@
             var x = document.getElementById("myTable").rows[a].cells;
             x[b].style.backgroundColor = "#333333";
             bl.push([a, b]);
+        } else if (check == 4) {
+            var x = document.getElementById("myTable").rows[a].cells;
+            x[b].style.backgroundColor = "#eedddd";
+            var index = -1;
+            //var index = bl.indexOf([a, b]);
+            for (var i = 0; i < bl.length; i++) {
+                if (bl[i][0] == a && bl[i][1] == b) {
+                    index = i;
+                    break
+                } else {
+                    index = -1;
+                }
+            }
+            console.log(index)
+            if (index > -1) {
+                bl.splice(index, 1);
+            }
+            console.log(bl)
         } else {
 
         }
